@@ -7,11 +7,12 @@ import org.junit.Test;
 import br.bodoque.Sequence;
 
 
-public class SequenceTest {
+public class SequenceTest extends GlobalSetUp {
 
+	@Override
 	@Before
 	public void setUp() {
-		Sequence.clearSequenceFor(Person.class);
+		super.setUp();
 	}
 	
 	@Test

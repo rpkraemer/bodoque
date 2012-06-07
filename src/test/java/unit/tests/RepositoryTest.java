@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import helpers.Person;
 
 import java.util.List;
@@ -16,17 +15,18 @@ import org.junit.Test;
 import br.bodoque.Repository;
 
 
-public class RepositoryTest {
+public class RepositoryTest extends GlobalSetUp {
 
+	@Override
 	@Before
 	public void setUp() {
-		Repository.clearRepositoryFor(Person.class);
+		super.setUp();
 	}
 	
 	@Test
 	public void shouldRepositoryMapBeEmptyOnStart() {
 		assertNotNull(Repository.getRepository());
-		assertTrue(Repository.getRepository().size() == 0);
+		assertEquals(0, Repository.getRepository().size());
 	}
 	
 	@Test
@@ -34,7 +34,7 @@ public class RepositoryTest {
 		Person person = createEdipoPerson();
 		Repository.addPrevalentObject(person, 1L);
 		
-		assertTrue(Repository.getRepository().size() == 1);
+		assertEquals(1, Repository.getRepository().size());
 		assertSame(person, Repository.getRepository().get(Person.class).get(1L));
 	}
 	
@@ -44,7 +44,7 @@ public class RepositoryTest {
 		Person robson = createRobsonPerson();
 		insertPeopleOnRepositoryMap(edipo, robson);
 		
-		assertTrue(Repository.getRepository().size() == 1);
+		assertEquals(1, Repository.getRepository().size());
 		assertEquals(2, Repository.getRepository().get(Person.class).size());
 	}
 

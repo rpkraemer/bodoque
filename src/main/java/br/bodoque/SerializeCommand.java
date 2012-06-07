@@ -1,5 +1,6 @@
 package br.bodoque;
 
+
 public class SerializeCommand<T extends Prevalent> implements Command {
 
 	private Long oID;
@@ -18,7 +19,9 @@ public class SerializeCommand<T extends Prevalent> implements Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
-		return ((obj instanceof Command) && 
-				((SerializeCommand<T>) obj).oID == this.oID);
+		return ((obj instanceof SerializeCommand) && 
+				((SerializeCommand<T>) obj).oID == this.oID &&
+				((SerializeCommand<T>) obj).prevalentObject.getClass() 
+				== this.prevalentObject.getClass());
 	}
 }

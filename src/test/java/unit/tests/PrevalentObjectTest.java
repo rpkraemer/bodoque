@@ -2,19 +2,19 @@ package unit.tests;
 
 import static org.junit.Assert.assertEquals;
 import helpers.Person;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import br.bodoque.CommandLogList;
 import br.bodoque.Repository;
-import br.bodoque.Sequence;
 
-public class PrevalentObjectTest {
+public class PrevalentObjectTest extends GlobalSetUp {
 
+	@Override
 	@Before
 	public void setUp() {
-		CommandLogList.clearLogList();
-		Repository.clearRepositoryFor(Person.class);
-		Sequence.clearSequenceFor(Person.class);
+		super.setUp();
 	}
 	
 	@Test
