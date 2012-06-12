@@ -9,7 +9,7 @@ import br.bodoque.Command;
 import br.bodoque.CommandLogList;
 import br.bodoque.SerializeCommand;
 
-public class CommandLogListTest extends GlobalSetUp {
+public class CommandLogListTest extends UnitTestCase {
 	
 	@Override
 	@Before
@@ -20,7 +20,7 @@ public class CommandLogListTest extends GlobalSetUp {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldRiseExceptionWhenTryToInvokeCommandNotAdded() {
 		Person person = new Person("Pessoa", 30);
-		Command commandNotAdded = new SerializeCommand<Person>(1L, person);
+		Command commandNotAdded = new SerializeCommand<Person>(person);
 		CommandLogList.executeCommand(commandNotAdded);
 	}
 }

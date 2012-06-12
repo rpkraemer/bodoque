@@ -15,7 +15,7 @@ import org.junit.Test;
 import br.bodoque.Repository;
 
 
-public class RepositoryTest extends GlobalSetUp {
+public class RepositoryTest extends UnitTestCase {
 
 	@Override
 	@Before

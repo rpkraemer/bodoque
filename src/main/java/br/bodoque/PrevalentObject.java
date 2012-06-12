@@ -9,19 +9,34 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 	public void save() {
 		prevalentObject = whoAmI();
 		
-		if (isThisPrevalentObjectNotPersistedYet())
-			generateOIDForThisPrevalentObject();
+		//OMG not possible use is* in method names because FlexJson serialize it \o/
+		if (this.ehPrevalentObjectNotPersistedYet())
+			this.generateOIDForThisPrevalentObject();
 		
-		Command serializeCommand = new SerializeCommand<T>(oID, prevalentObject);
+		Command serializeCommand = createSerializeCommand(prevalentObject);
+		addCommandToLogList(serializeCommand);
+	}
+	
+	public static <T extends Prevalent> void save(T prevalentObject) {
+		Command serializeCommand = createSerializeCommand(prevalentObject);
+		addCommandToLogList(serializeCommand);
+	}
+
+	private static void addCommandToLogList(Command serializeCommand) {
 		CommandLogList.addCommand(serializeCommand);
 		CommandLogList.executeCommand(serializeCommand);
+	}
+
+	private static <T extends Prevalent> Command createSerializeCommand(T prevalentObject) {
+		Command serializeCommand = new SerializeCommand<T>(prevalentObject);
+		return serializeCommand;
 	}
 	
 	private void generateOIDForThisPrevalentObject() {
 		this.oID = Sequence.getNextOIDFor(prevalentObject.getClass());
 	}
 
-	private boolean isThisPrevalentObjectNotPersistedYet() {
+	private boolean ehPrevalentObjectNotPersistedYet() {
 		return this.oID == null;
 	}
 

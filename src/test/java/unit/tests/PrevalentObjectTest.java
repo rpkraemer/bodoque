@@ -9,7 +9,7 @@ import org.junit.Test;
 import br.bodoque.CommandLogList;
 import br.bodoque.Repository;
 
-public class PrevalentObjectTest extends GlobalSetUp {
+public class PrevalentObjectTest extends UnitTestCase {
 
 	@Override
 	@Before

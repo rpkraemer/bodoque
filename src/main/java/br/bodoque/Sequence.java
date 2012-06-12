@@ -11,7 +11,7 @@ public class Sequence {
 		sequences = new HashMap<Class<? extends Prevalent>, Long>();
 	}
 	
-	public static Long getNextOIDFor(Class<? extends Prevalent> prevalentObjectClass) {
+	public synchronized static Long getNextOIDFor(Class<? extends Prevalent> prevalentObjectClass) {
 		Long nextOID = sequences.get(prevalentObjectClass);
 		if (nextOID == null) {
 			sequences.put(prevalentObjectClass, 1L);
@@ -22,7 +22,11 @@ public class Sequence {
 		return nextOID;
 	}
 
-	public static void clearSequenceFor(Class<? extends Prevalent> prevalentObjectClass) {
+	public synchronized static void clearSequenceFor(Class<? extends Prevalent> prevalentObjectClass) {
 		sequences.remove(prevalentObjectClass);
+	}
+
+	public synchronized static void clearSequences() {
+		sequences.clear();
 	}
 }

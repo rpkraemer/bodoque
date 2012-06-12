@@ -7,7 +7,7 @@ import org.junit.Test;
 import br.bodoque.Sequence;
 
 
-public class SequenceTest extends GlobalSetUp {
+public class SequenceTest extends UnitTestCase {
 
 	@Override
 	@Before
