@@ -10,7 +10,7 @@ public class SnapshotWriter {
 	private FileWriter fileWriter;
 	
 	public SnapshotWriter() {
-		this.snapshotFile = new File("src/main/resources", "bodoque.bdq");
+		this.snapshotFile = new File("src/test/resources", "bodoque.bdq");
 		createFileWriter();
 	}
 	
@@ -18,22 +18,16 @@ public class SnapshotWriter {
 		try {
 			this.fileWriter = new FileWriter(snapshotFile, true);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//TODO where is my logger?
 		}
 	}
 	
-	public void writeToSnapshot(String jsonRepresentation) {
+	public void writeToSnapshot(String jsonRepresentation) throws IOException {
 		try {
 			fileWriter.write(jsonRepresentation + "\n");
 			fileWriter.flush();
-		} catch (IOException e) {
-			//TODO where is my log?
 		} finally {
-			try {
-				fileWriter.close();
-			} catch (Exception e) {
-				//TODO where is my log?
-			}
+			fileWriter.close();
 		}
 	}
 }

@@ -7,6 +7,8 @@ import helpers.Person;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import br.bodoque.Command;
 import br.bodoque.CommandLogList;
 import br.bodoque.Prevalent;
 import br.bodoque.SerializeCommand;
@@ -83,5 +85,16 @@ public class SerializeCommandTest extends UnitTestCase {
 		person.save();
 		
 		assertHasSnapshotFile();
+	}
+	
+	@Test
+	public void shouldReturnFalseInEqualsComparation() {
+		Command validCommand = new SerializeCommand<Prevalent>(createAPerson());
+		String invalidCommand = "invalidCommand";
+		Integer otherInvalidCommand = 10;
+		
+		Assert.assertFalse(validCommand.equals(invalidCommand));
+		Assert.assertFalse(invalidCommand.equals(validCommand));
+		Assert.assertFalse(validCommand.equals(otherInvalidCommand));
 	}
 }

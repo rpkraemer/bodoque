@@ -1,5 +1,6 @@
 package br.bodoque;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -32,24 +33,29 @@ class LogListDaemon implements Runnable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
-		try {
-			Thread.sleep(secondsPollInterval);
-		} catch (InterruptedException e) {
-			//TODO where is my logger?!
-		}
-		
 		while (true) {
+			try {
+				Thread.sleep(secondsPollInterval);
+			} catch (InterruptedException e) {
+				//TODO where is my logger?!
+			}
+			
 			List<Command> commandsToFlush = CommandLogList.getLogList();
 			for (int index = 0; !commandsToFlush.isEmpty(); index++) {
 				Command commandToExecute = commandsToFlush.get(index);
 				commandToExecute.execute();
 				
-				writer = new SnapshotWriter();
-				writer.writeToSnapshot(
-						((SerializeCommand<Prevalent>) commandToExecute).
-						getJSONRepresentation());
-				
-				CommandLogList.removeCommand(commandToExecute);
+				if (writer == null)
+					writer = new SnapshotWriter();
+			
+				try {
+					writer.writeToSnapshot(
+							((SerializeCommand<Prevalent>) commandToExecute).
+							getJSONRepresentation());
+					CommandLogList.removeCommand(commandToExecute);
+				} catch (IOException e) {
+					// TODO where is my logger?
+				}
 			}
 		}
 	}
