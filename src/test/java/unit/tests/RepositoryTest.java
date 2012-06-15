@@ -57,7 +57,7 @@ public class RepositoryTest extends UnitTestCase {
 	}
 	
 	private Person createEdipoPerson() {
-		Person person = new Person("Édipo", 23);
+		Person person = new Person("Edipo", 23);
 		return person;
 	}
 	
@@ -100,7 +100,7 @@ public class RepositoryTest extends UnitTestCase {
 		
 		assertEquals("Robson", people.get(2L).getName());
 		assertEquals(21, people.get(2L).getAge());
-		assertEquals("Édipo", people.get(1L).getName());
+		assertEquals("Edipo", people.get(1L).getName());
 		assertEquals(23, people.get(1L).getAge());
 	}
 	
