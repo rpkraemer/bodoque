@@ -1,7 +1,6 @@
 package br.bodoque;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -13,23 +12,31 @@ public class CommandLogList {
 		commandLogList = new ArrayList<Command>(500);
 	}
 	
-	public static void addCommand(Command command) {
+	public synchronized static void addCommand(Command command) {
 		int commandIndex = commandLogList.indexOf(command);
 		if (commandIndex == -1)
 			commandLogList.add(command);
 		else
 			commandLogList.set(commandIndex, command);
 	}
+	
+	public synchronized static void removeCommand(Command command) {
+		int commandIndex = commandLogList.indexOf(command);
+		if (commandIndex >= 0)
+			commandLogList.remove(commandIndex);
+	}
 
 	public static void clearLogList() {
 		commandLogList.clear();
 	}
 
-	public static List<Command> getLogList() {
-		return Collections.unmodifiableList(commandLogList);
+	public synchronized static List<Command> getLogList() {
+		//TODO Verify method caller, if caller is Reader Thread return mutable list
+		//TODO else return unmodifiable list (read-only)
+		return commandLogList;
 	}
 
-	public static void executeCommand(Command command) {
+	public synchronized static void executeCommand(Command command) {
 		int commandIndex = commandLogList.indexOf(command);
 		if (commandIndex == -1)
 			throw new IllegalArgumentException("Command " + command + "does not exist in log list");

@@ -1,27 +1,46 @@
 package br.bodoque;
 
+import flexjson.JSONSerializer;
+
 
 public class SerializeCommand<T extends Prevalent> implements Command {
 
-	private Long oID;
 	private T prevalentObject;
+	private String prevalentObjectJSONRepresentation;
 	
-	public SerializeCommand(Long oID, T prevalentObject) {
-		this.oID = oID;
+	public SerializeCommand(T prevalentObject) {
 		this.prevalentObject = prevalentObject;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() {
-		Repository.addPrevalentObject(prevalentObject, oID);
+		generateJSONRepresentation();
+		Repository.addPrevalentObject(prevalentObject, 
+								((PrevalentObject<T>) prevalentObject).getOID());
 	}
 	
+	private void generateJSONRepresentation() {
+		JSONSerializer serializer = new JSONSerializer();
+		this.prevalentObjectJSONRepresentation = 
+			serializer.include("*").serialize(prevalentObject);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
-		return ((obj instanceof SerializeCommand) && 
-				((SerializeCommand<T>) obj).oID == this.oID &&
-				((SerializeCommand<T>) obj).prevalentObject.getClass() 
-				== this.prevalentObject.getClass());
+		if (!(obj instanceof SerializeCommand)) 
+			return false;
+		
+		SerializeCommand<T> objSerializeCommand = (SerializeCommand<T>) obj;
+		PrevalentObject<T> objPrevalentObject = (PrevalentObject<T>) objSerializeCommand.prevalentObject;
+		PrevalentObject<T> thisPrevalentObject = (PrevalentObject<T>) this.prevalentObject;
+		
+		return thisPrevalentObject.getClass() == objPrevalentObject.getClass() &&
+			   thisPrevalentObject.getOID().equals(objPrevalentObject.getOID());
+	}
+
+	public String getJSONRepresentation() {
+		return this.prevalentObjectJSONRepresentation;
 	}
 }

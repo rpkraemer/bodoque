@@ -9,13 +9,15 @@ import helpers.Person;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import br.bodoque.Repository;
 
 
-public class RepositoryTest extends GlobalSetUp {
+public class RepositoryTest extends UnitTestCase {
 
 	@Override
 	@Before
@@ -35,6 +37,7 @@ public class RepositoryTest extends GlobalSetUp {
 		Repository.addPrevalentObject(person, 1L);
 		
 		assertEquals(1, Repository.getRepository().size());
+		assertEquals(1, Repository.getRepository().get(Person.class).size());
 		assertSame(person, Repository.getRepository().get(Person.class).get(1L));
 	}
 	
@@ -100,5 +103,18 @@ public class RepositoryTest extends GlobalSetUp {
 		assertEquals("Edipo", people.get(1L).getName());
 		assertEquals(23, people.get(1L).getAge());
 	}
+	
+	@Test
+	public void shouldClearRepositoryForAPerson() {
+		Person edipo = createEdipoPerson();
+		Person robson = createRobsonPerson();
+		insertPeopleOnRepositoryMap(edipo, robson);
 		
+		Assert.assertEquals(2, Repository.getRepository().get(Person.class).size());
+		
+		Repository.clearRepositoryFor(Person.class);
+		Assert.assertNull(Repository.getRepository().get(Person.class));
+		
+		Repository.clearRepositoryFor(Person.class);
+	}
 }
