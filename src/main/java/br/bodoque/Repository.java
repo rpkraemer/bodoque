@@ -26,7 +26,13 @@ public class Repository {
 		prevalentObjectMap.put(oID, prevalentObject);
 		repository.put(prevalentObject.getClass(), prevalentObjectMap);
 	}
-
+	
+	public synchronized static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long oID){
+		Map<Long, Prevalent> prevalentObjectMap = repository.get(prevalentObject.getClass());
+		if(prevalentObjectMap == null){ return ; }
+		prevalentObjectMap.remove(oID);
+	}
+	
 	public synchronized static void clearRepositoryFor(Class<? extends Prevalent> prevalentObjectClass) {
 		repository.remove(prevalentObjectClass);
 	}

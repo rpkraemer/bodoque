@@ -7,17 +7,16 @@ public class SerializeCommand<T extends Prevalent> implements Command {
 
 	private T prevalentObject;
 	private String prevalentObjectJSONRepresentation;
+	private boolean isRemovable;
 	
 	public SerializeCommand(T prevalentObject) {
 		this.prevalentObject = prevalentObject;
+		this.isRemovable = false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() {
 		generateJSONRepresentation();
-		Repository.addPrevalentObject(prevalentObject, 
-								((PrevalentObject<T>) prevalentObject).getOID());
 	}
 	
 	private void generateJSONRepresentation() {
@@ -40,7 +39,16 @@ public class SerializeCommand<T extends Prevalent> implements Command {
 			   thisPrevalentObject.getOID().equals(objPrevalentObject.getOID());
 	}
 
+	public void setRemovable(boolean isRemovable) {
+		this.isRemovable = isRemovable;
+	}
+
 	public String getJSONRepresentation() {
 		return this.prevalentObjectJSONRepresentation;
+	}
+
+	@Override
+	public boolean isRemovable() {
+		return this.isRemovable;
 	}
 }

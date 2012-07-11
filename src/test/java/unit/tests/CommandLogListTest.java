@@ -19,8 +19,9 @@ public class CommandLogListTest extends UnitTestCase {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldRiseExceptionWhenTryToInvokeCommandNotAdded() {
-		Person person = new Person("Pessoa", 30);
+		Person person = createAPerson();
 		Command commandNotAdded = new SerializeCommand<Person>(person);
 		CommandLogList.executeCommand(commandNotAdded);
 	}
+	
 }

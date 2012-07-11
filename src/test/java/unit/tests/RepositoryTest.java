@@ -109,12 +109,9 @@ public class RepositoryTest extends UnitTestCase {
 		Person edipo = createEdipoPerson();
 		Person robson = createRobsonPerson();
 		insertPeopleOnRepositoryMap(edipo, robson);
-		
 		Assert.assertEquals(2, Repository.getRepository().get(Person.class).size());
-		
+
 		Repository.clearRepositoryFor(Person.class);
 		Assert.assertNull(Repository.getRepository().get(Person.class));
-		
-		Repository.clearRepositoryFor(Person.class);
 	}
 }

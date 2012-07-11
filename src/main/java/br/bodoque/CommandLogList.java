@@ -12,28 +12,36 @@ public class CommandLogList {
 		commandLogList = new ArrayList<Command>(500);
 	}
 	
-	public synchronized static void addCommand(Command command) {
-		int commandIndex = commandLogList.indexOf(command);
-		if (commandIndex == -1)
-			commandLogList.add(command);
-		else
-			commandLogList.set(commandIndex, command);
+	public static void addCommand(Command command) {
+		synchronized (commandLogList) {
+			int commandIndex = commandLogList.indexOf(command);
+			if (commandIndex == -1)
+				commandLogList.add(command);
+			else
+				commandLogList.set(commandIndex, command);
+		}
 	}
 	
-	public synchronized static void removeCommand(Command command) {
-		int commandIndex = commandLogList.indexOf(command);
-		if (commandIndex >= 0)
-			commandLogList.remove(commandIndex);
+	public static void removeCommand(Command command) {
+		synchronized (commandLogList) {
+			int commandIndex = commandLogList.indexOf(command);
+			if (commandIndex >= 0)
+				commandLogList.remove(commandIndex);
+		}
 	}
 
 	public static void clearLogList() {
-		commandLogList.clear();
+		synchronized (commandLogList) {
+			commandLogList.clear();
+		}
 	}
 
-	public synchronized static List<Command> getLogList() {
+	public static List<Command> getLogList() {
 		//TODO Verify method caller, if caller is Reader Thread return mutable list
 		//TODO else return unmodifiable list (read-only)
-		return commandLogList;
+		synchronized (commandLogList) {
+			return new ArrayList<Command>(commandLogList);
+		}
 	}
 
 	public synchronized static void executeCommand(Command command) {

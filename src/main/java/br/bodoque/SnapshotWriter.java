@@ -11,10 +11,15 @@ public class SnapshotWriter {
 	
 	public SnapshotWriter() {
 		this.snapshotFile = new File("src/test/resources", "bodoque.bdq");
-		createFileWriter();
+		deleteCurrentSnapshotFile();
+		createNewSnapshotFile();
 	}
 	
-	private void createFileWriter() {
+	private void deleteCurrentSnapshotFile() {
+		this.snapshotFile.delete();
+	}
+
+	private void createNewSnapshotFile() {
 		try {
 			this.fileWriter = new FileWriter(snapshotFile, true);
 		} catch (IOException e) {
@@ -23,11 +28,15 @@ public class SnapshotWriter {
 	}
 	
 	public void writeToSnapshot(String jsonRepresentation) throws IOException {
+		fileWriter.write(jsonRepresentation + "\n");
+	}
+
+	public void flushAndClose() {
 		try {
-			fileWriter.write(jsonRepresentation + "\n");
-			fileWriter.flush();
-		} finally {
-			fileWriter.close();
+			this.fileWriter.flush();
+			this.fileWriter.close();
+		} catch (IOException e) {
+			//TODO where is my logger?
 		}
 	}
 }
