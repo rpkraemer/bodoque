@@ -1,6 +1,7 @@
 package br.bodoque;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,8 @@ public class Repository {
 	@SuppressWarnings("unchecked")
 	public synchronized static <T extends Prevalent> List<T> getListFor(Class<T> prevalentObjectClass) {
 		Map<Long, T> prevalentObjectMap = (Map<Long, T>) repository.get(prevalentObjectClass);
-		return new ArrayList<T>(prevalentObjectMap.values());
+		return (List<T>) ((prevalentObjectMap != null) ? 
+				new ArrayList<T>(prevalentObjectMap.values()) : Collections.emptyList());
 	}
 
 	@SuppressWarnings("unchecked")

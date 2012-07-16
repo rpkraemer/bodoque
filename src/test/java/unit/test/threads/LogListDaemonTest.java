@@ -17,7 +17,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldGenerateAndUpdateToAValidJSONRepresentation() {
-		Person person = createAPerson();
+		Person person = createAPerson(30);
 		person.save();
 		getAndVerifyCommand();
 		
@@ -38,7 +38,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	
 	@Test
 	public void shouldGenerateAValidJSONRepresentation() {
-		Person person = createAPerson();
+		Person person = createAPerson(30);
 		person.save();
 		getAndVerifyCommand();
 	}
@@ -46,7 +46,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	@Ignore
 	public void shouldRemoveCommandsWhenLogListIsBig() {
 		for (int i = 0; i < 2000; i++) {
-			Person person = createAPerson();
+			Person person = createAPerson(30);
 			person.save();
 		}
 		
@@ -62,7 +62,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	public void shouldWriteTwoJSONObjectsLogToSnapshotFile() {
 		excludeSnapshotFile();
 
-		Person person = createAPerson();
+		Person person = createAPerson(30);
 		Person anotherPerson = new Person("robson", 21);
 		person.save();
 		anotherPerson.save();
@@ -74,7 +74,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	
 	@Test
 	public void shouldReturnFalseInEqualsComparation() {
-		Command validCommand = new SerializeCommand<Prevalent>(createAPerson());
+		Command validCommand = new SerializeCommand<Prevalent>(createAPerson(30));
 		String invalidCommand = "invalidCommand";
 		Integer otherInvalidCommand = 10;
 		
@@ -87,7 +87,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	public void shouldWriteJSONObjectLogToSnapshotFile() {
 		excludeSnapshotFile();
 
-		Person person = createAPerson();
+		Person person = createAPerson(30);
 		person.save();
 		
 		assertHasSnapshotFile();

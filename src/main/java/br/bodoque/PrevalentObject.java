@@ -1,12 +1,24 @@
 package br.bodoque;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+
 
 
 public abstract class PrevalentObject<T extends Prevalent> implements Prevalent {
 	
 	private T prevalentObject;
+	private static Class<? extends Prevalent> prevalentObjectClass;
 	private Long oID;
 	
+	@SuppressWarnings("unchecked")
+	public PrevalentObject() {
+		prevalentObjectClass = (Class<? extends Prevalent>) ((ParameterizedType) getClass().getGenericSuperclass()).
+		getActualTypeArguments()[0];
+	}
+
 	public void save() {
 		prevalentObject = whoAmI();
 		
@@ -29,6 +41,24 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 		}
 		deletePrevalentObject(prevalentObject, this.oID);
 		removeCommandFromLogList(prevalentObject);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends Prevalent> List<T> find(Filter<T> filter) {
+		List<T> objects = (List<T>) Repository.getListFor(prevalentObjectClass);
+		List<T> filtered = Collections.emptyList();
+		for (T obj : objects) {
+			if (filter.accept(obj)) {
+				filtered.add(obj);
+			}
+		}
+		return filtered;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends Prevalent> List<T> all() {
+		List<T> list = (List<T>) Repository.getListFor(prevalentObjectClass);
+		return list;
 	}
 
 	@SuppressWarnings("unchecked")
