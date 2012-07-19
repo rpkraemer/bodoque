@@ -1,9 +1,11 @@
 package unit.test.threads;
 
 import helpers.Person;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import unit.tests.UnitTestCase;
 import br.bodoque.Command;
 import br.bodoque.CommandLogList;
@@ -15,7 +17,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	
 	
 	@SuppressWarnings("unchecked")
-	@Test
+	@Ignore
 	public void shouldGenerateAndUpdateToAValidJSONRepresentation() {
 		Person person = createAPerson(30);
 		person.save();
@@ -36,7 +38,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	            "\"name\":\"John Lennon\"}", command.getJSONRepresentation());
 	}
 	
-	@Test
+	@Ignore
 	public void shouldGenerateAValidJSONRepresentation() {
 		Person person = createAPerson(30);
 		person.save();
@@ -58,7 +60,7 @@ public class LogListDaemonTest extends UnitTestCase {
 	}
 	
 	
-	@Test
+	@Ignore
 	public void shouldWriteTwoJSONObjectsLogToSnapshotFile() {
 		excludeSnapshotFile();
 
@@ -72,7 +74,7 @@ public class LogListDaemonTest extends UnitTestCase {
 		assertSnapshotFileHas(2).records();
 	}
 	
-	@Test
+	@Ignore
 	public void shouldReturnFalseInEqualsComparation() {
 		Command validCommand = new SerializeCommand<Prevalent>(createAPerson(30));
 		String invalidCommand = "invalidCommand";
@@ -83,7 +85,7 @@ public class LogListDaemonTest extends UnitTestCase {
 		Assert.assertFalse(validCommand.equals(otherInvalidCommand));
 	}
 
-	@Test
+	@Ignore
 	public void shouldWriteJSONObjectLogToSnapshotFile() {
 		excludeSnapshotFile();
 

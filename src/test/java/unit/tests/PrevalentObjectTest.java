@@ -15,6 +15,7 @@ import org.junit.Test;
 import br.bodoque.CannotRemovePrevalentObjectException;
 import br.bodoque.CommandLogList;
 import br.bodoque.Filter;
+import br.bodoque.Finder;
 import br.bodoque.Repository;
 
 public class PrevalentObjectTest extends UnitTestCase {
@@ -113,6 +114,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 		Assert.assertEquals(1, Repository.getListFor(Customer.class).size());
 	}
 	
+	@Test
 	public void shouldFindAPersonAtRepository() {
 		Person p1 = createAPerson(19);
 		Person p2 = createAPerson(50);
@@ -122,12 +124,44 @@ public class PrevalentObjectTest extends UnitTestCase {
 		p1.save(); p2.save(); p3.save();
 		child.save(); child2.save();
 		
-		List<Person> adults = Person.find(new Filter<Person>() {
+		List<Person> adults = Finder.from(Person.class).getAll(new Filter<Person>() {
 			public boolean accept(Person p) {
 				return p.getAge() >= 18;
 			}
 		});
 		Assert.assertEquals(3, adults.size());
+	}
+	
+	@Test
+	public void shouldFindAllPeople() {
+		Person p = createAPerson(18);
+		Person p2 = createAPerson(33);
+		Person p3 = createAPerson(50);
+		p.save(); p2.save(); p3.save();
+		
+		List<Person> people = Finder.from(Person.class).getAll();
+		Assert.assertNotNull(people);
+		Assert.assertEquals(3, people.size());
+		Assert.assertEquals(50, people.get(2).getAge());
+	}
+	
+	@Test
+	public void shouldFindPersonByOID() {
+		for (int i = 0; i < 1000; i++) {
+			Person p = createAPerson(i);
+			Person.save(p);
+		}
+		Person person662 = Finder.from(Person.class).getByOID(662L);
+		Assert.assertNotNull(person662);
+		Assert.assertEquals(661, person662.getAge());
+	}
+	
+	@Test
+	public void shouldMaintainSameReference() {
+		Person p = createAPerson(18);
+		p.save();
+		Person anotherReferenceButSameObject = Finder.from(Person.class).getByOID(1L);
+		Assert.assertSame(p, anotherReferenceButSameObject);
 	}
 	
 	@Test

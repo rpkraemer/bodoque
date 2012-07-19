@@ -53,4 +53,10 @@ public class Repository {
 	public synchronized static void clearRepository() {
 		repository.clear();
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Prevalent> T getPrevalentObjectFromRepository(
+			Class<? extends Prevalent> prevalentObjectClass, Long oID) {
+		return (T) repository.get(prevalentObjectClass).get(oID);
+	}
 }

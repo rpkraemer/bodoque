@@ -69,7 +69,6 @@ class LogListDaemon implements Runnable {
 
 	private void cleanLogListWhenIsToBig() {
 		List<Command> commandLogList = CommandLogList.getLogList(); 
-		System.out.println(commandLogList.size());
 		if (commandLogList.size() >= 1000) {
 			Iterator<Command> iterator = commandLogList.iterator();
 			while (iterator.hasNext()) {
