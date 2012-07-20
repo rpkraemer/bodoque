@@ -74,7 +74,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 		p1.save();
 		Person.save(p2);
 		
-		List<Person> people = Person.all();
+		List<Person> people = Finder.from(Person.class).getAll();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(2, people.size());
 	}
@@ -86,20 +86,20 @@ public class PrevalentObjectTest extends UnitTestCase {
 		p1.save();
 		Person.save(p2);
 		
-		List<Person> people = Person.all();
+		List<Person> people = Finder.from(Person.class).getAll();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(2, people.size());
 		
 		Person.delete(p1);
 		
-		people = Person.all();
+		people = Finder.from(Person.class).getAll();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(1, people.size());
 	}
 	
 	@Test
 	public void shouldReturnEmptyListWhenNotExistisPersistedObjects() {
-		List<Person> people = Person.all();
+		List<Person> people = Finder.from(Person.class).getAll();
 		Assert.assertNotNull(people);
 	}
 	
