@@ -19,7 +19,7 @@ public class SerializeCommandTest extends UnitTestCase {
 	
 	@Test
 	public void shouldCreateTwoSerializeCommandLog() {
-		Person person = createAPerson(18);
+		Person person = givenAPerson(18);
 		Dog dog = createADog();
 		person.save();
 		dog.save();

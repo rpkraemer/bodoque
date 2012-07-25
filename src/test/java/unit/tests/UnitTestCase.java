@@ -52,7 +52,7 @@ public class UnitTestCase {
 		snapshot.delete();
 	}
 	
-	public Person createAPerson(int idade) {
+	public Person givenAPerson(int idade) {
 		return new Person("Pessoa", idade);
 	}
 	

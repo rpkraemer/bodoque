@@ -12,10 +12,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import br.bodoque.CannotRemovePrevalentObjectException;
+import br.bodoque.CannotDeletePrevalentObjectException;
 import br.bodoque.CommandLogList;
 import br.bodoque.Filter;
-import br.bodoque.Finder;
+import br.bodoque.Find;
 import br.bodoque.Repository;
 
 public class PrevalentObjectTest extends UnitTestCase {
@@ -28,7 +28,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 	
 	@Test
 	public void shouldCreateASerializeCommandAndInsertOnLogListWhenSaveIsInvoked() {
-		Person person = createAPerson(30);
+		Person person = givenAPerson(30);
 		person.save();
 		assertEquals(1, CommandLogList.getLogList().size());
 		assertEquals("Pessoa", Repository.getMapFor(Person.class).get(1L).getName());
@@ -37,7 +37,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 	
 	@Test
 	public void shouldRemoveAPersonFromPeopleRepositoryAndCommandLogList(){
-		Person person = createAPerson(30);
+		Person person = givenAPerson(30);
 		person.save();
 		assertEquals(1, Repository.getMapFor(Person.class).size());
 		person.delete();
@@ -45,21 +45,21 @@ public class PrevalentObjectTest extends UnitTestCase {
 		assertEquals(0, CommandLogList.getLogList().size());
 	}
 	
-	@Test(expected = CannotRemovePrevalentObjectException.class)
+	@Test(expected = CannotDeletePrevalentObjectException.class)
 	public void shouldRaiseExceptionWhenRemoveAPersonNotSavedYet(){
-		Person person = createAPerson(30);
+		Person person = givenAPerson(30);
 		person.delete(true);
 	}
 	
 	@Test
 	public void shouldNotRaiseExceptionWhenRemoveAPersonNotSavedYet(){
-		Person person = createAPerson(30);
+		Person person = givenAPerson(30);
 		person.delete();
 	}
 	
 	@Test
 	public void shouldRemoveAPersonFromPeopleRepositoryAndCommandLogListStaticWay(){
-		Person person = createAPerson(30);
+		Person person = givenAPerson(30);
 		person.save();
 		assertEquals(1, Repository.getMapFor(Person.class).size());
 		Person.delete(person);
@@ -69,37 +69,37 @@ public class PrevalentObjectTest extends UnitTestCase {
 	
 	@Test
 	public void shouldReturnAListOfSavedPeople() {
-		Person p1 = createAPerson(30);
-		Person p2 = createAPerson(30);
+		Person p1 = givenAPerson(30);
+		Person p2 = givenAPerson(30);
 		p1.save();
 		Person.save(p2);
 		
-		List<Person> people = Finder.from(Person.class).getAll();
+		List<Person> people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(2, people.size());
 	}
 	
 	@Test
 	public void shouldReturnAListOfSavedPeople2() {
-		Person p1 = createAPerson(30);
-		Person p2 = createAPerson(30);
+		Person p1 = givenAPerson(30);
+		Person p2 = givenAPerson(30);
 		p1.save();
 		Person.save(p2);
 		
-		List<Person> people = Finder.from(Person.class).getAll();
+		List<Person> people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(2, people.size());
 		
 		Person.delete(p1);
 		
-		people = Finder.from(Person.class).getAll();
+		people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(1, people.size());
 	}
 	
 	@Test
 	public void shouldReturnEmptyListWhenNotExistisPersistedObjects() {
-		List<Person> people = Finder.from(Person.class).getAll();
+		List<Person> people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 	}
 	
@@ -115,16 +115,85 @@ public class PrevalentObjectTest extends UnitTestCase {
 	}
 	
 	@Test
+	public void shouldReturnTrueWhenSaveAPersonAtRepository() {
+		Person p = givenAPerson(20);
+		Assert.assertTrue(p.save());
+	}
+	
+	@Test
+	public void shouldReturnTrueWhenUpdateAPersonAtRepository() {
+		Person p = givenAPerson(20);
+		Assert.assertTrue(Person.save(p));
+		p.setAge(21);
+		Assert.assertTrue(p.save());
+	}
+	
+	@Test
+	public void shouldDeleteAPersonFromRepository() {
+		Person p = givenAPerson(18);
+		Person.save(p);
+		Assert.assertTrue(Person.delete(p));
+	}
+	
+	@Test
+	public void shouldReturnFalseWhenDeleteNotSavedObject() {
+		Person p = givenAPerson(18);
+		Assert.assertFalse(Person.delete(p));
+	}
+
+	@Test(expected = CannotDeletePrevalentObjectException.class)
+	public void shouldRaiseExceptionWhenTryToDeleteNotSavedObject() {
+		Person p = givenAPerson(12);
+		p.delete(true);
+	}
+	
+	@Test
+	public void shouldRaiseExceptionWhenTryToDeleteNotSavedObjectTestExceptionMessage() {
+		Person p = givenAPerson(12);
+		String message = "Cannot remove object of class Person. Only allowed to remove objects saved.";
+		try {
+			p.delete(true);
+		} catch (CannotDeletePrevalentObjectException e) {
+			Assert.assertEquals(message, e.getMessage());
+		}
+	}
+	
+	@Test
+	public void shouldNotRaiseExceptionWhenTryToDeleteNotSavedObject() {
+		Person p = givenAPerson(12);
+		p.delete(false);
+		p.delete();
+	}
+	
+	@Test(expected = CannotDeletePrevalentObjectException.class)
+	public void shouldRaiseExceptionWhenTryToStaticDeleteNotSavedObject() {
+		Person p = givenAPerson(12);
+		Person.delete(p, true);
+	}
+	
+	@Test
+	public void shouldRaiseExceptionWhenTryToStaticDeleteNotSavedObjectTestExceptionMessage() {
+		Person p = givenAPerson(12);
+		String message = "Cannot remove object of class Person. Only allowed to remove objects saved.";
+		try {
+			Person.delete(p, true);
+			Assert.fail("Not captured exception!");
+		} catch (CannotDeletePrevalentObjectException e) {
+			Assert.assertEquals(message, e.getMessage());
+		}
+	}
+	
+	@Test
 	public void shouldFindAPersonAtRepository() {
-		Person p1 = createAPerson(19);
-		Person p2 = createAPerson(50);
-		Person child = createAPerson(5);
-		Person child2 = createAPerson(11);
-		Person p3 = createAPerson(18);
+		Person p1 = givenAPerson(19);
+		Person p2 = givenAPerson(50);
+		Person child = givenAPerson(5);
+		Person child2 = givenAPerson(11);
+		Person p3 = givenAPerson(18);
 		p1.save(); p2.save(); p3.save();
 		child.save(); child2.save();
 		
-		List<Person> adults = Finder.from(Person.class).getAll(new Filter<Person>() {
+		List<Person> adults = Find.from(Person.class).all(new Filter<Person>() {
 			public boolean accept(Person p) {
 				return p.getAge() >= 18;
 			}
@@ -134,12 +203,12 @@ public class PrevalentObjectTest extends UnitTestCase {
 	
 	@Test
 	public void shouldFindAllPeople() {
-		Person p = createAPerson(18);
-		Person p2 = createAPerson(33);
-		Person p3 = createAPerson(50);
+		Person p = givenAPerson(18);
+		Person p2 = givenAPerson(33);
+		Person p3 = givenAPerson(50);
 		p.save(); p2.save(); p3.save();
 		
-		List<Person> people = Finder.from(Person.class).getAll();
+		List<Person> people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(3, people.size());
 		Assert.assertEquals(50, people.get(2).getAge());
@@ -148,32 +217,32 @@ public class PrevalentObjectTest extends UnitTestCase {
 	@Test
 	public void shouldFindPersonByOID() {
 		for (int i = 0; i < 1000; i++) {
-			Person p = createAPerson(i);
+			Person p = givenAPerson(i);
 			Person.save(p);
 		}
-		Person person662 = Finder.from(Person.class).getByOID(662L);
+		Person person662 = Find.from(Person.class).byOID(662L);
 		Assert.assertNotNull(person662);
 		Assert.assertEquals(661, person662.getAge());
 	}
 	
 	@Test
 	public void shouldMaintainSameReference() {
-		Person p = createAPerson(18);
+		Person p = givenAPerson(18);
 		p.save();
-		Person anotherReferenceButSameObject = Finder.from(Person.class).getByOID(1L);
+		Person anotherReferenceButSameObject = Find.from(Person.class).byOID(1L);
 		Assert.assertSame(p, anotherReferenceButSameObject);
 	}
 	
 	@Test
 	public void shouldSaveAPerson() {
-		Person p = createAPerson(30);
+		Person p = givenAPerson(30);
 		p.save();
 		Assert.assertEquals(1, Repository.getRepository().size());
 	}
 	
 	@Test
 	public void shouldMaintainOneCommandOnLogListWhenObjectStateIsUpdated() {
-		Person person = createAPerson(30);
+		Person person = givenAPerson(30);
 		person.save();
 		assertEquals(1, CommandLogList.getLogList().size());
 		assertEquals("Pessoa", Repository.getMapFor(Person.class).get(1L).getName());
