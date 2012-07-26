@@ -1,0 +1,7 @@
+# Add todos arquivos deletados para serem comitados
+
+	git ls-files --deleted | xargs git rm
+	
+# Reverter arquivos deletados
+
+	git ls-files -d | xargs git checkout --
