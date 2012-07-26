@@ -3,17 +3,13 @@ package unit.tests;
 import static org.junit.Assert.assertEquals;
 import helpers.Customer;
 import helpers.Person;
-
 import java.util.Date;
 import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import br.bodoque.CannotDeletePrevalentObjectException;
-import br.bodoque.CommandLogList;
 import br.bodoque.Filter;
 import br.bodoque.Find;
 import br.bodoque.Repository;
@@ -27,22 +23,12 @@ public class PrevalentObjectTest extends UnitTestCase {
 	}
 	
 	@Test
-	public void shouldCreateASerializeCommandAndInsertOnLogListWhenSaveIsInvoked() {
-		Person person = givenAPerson(30);
-		person.save();
-		assertEquals(1, CommandLogList.getLogList().size());
-		assertEquals("Pessoa", Repository.getMapFor(Person.class).get(1L).getName());
-		assertEquals(1L, person.getOID().longValue());
-	}
-	
-	@Test
-	public void shouldRemoveAPersonFromPeopleRepositoryAndCommandLogList(){
+	public void shouldRemoveAPersonFromPeopleRepository(){
 		Person person = givenAPerson(30);
 		person.save();
 		assertEquals(1, Repository.getMapFor(Person.class).size());
 		person.delete();
 		assertEquals(0, Repository.getMapFor(Person.class).size());
-		assertEquals(0, CommandLogList.getLogList().size());
 	}
 	
 	@Test(expected = CannotDeletePrevalentObjectException.class)
@@ -58,13 +44,12 @@ public class PrevalentObjectTest extends UnitTestCase {
 	}
 	
 	@Test
-	public void shouldRemoveAPersonFromPeopleRepositoryAndCommandLogListStaticWay(){
+	public void shouldRemoveAPersonFromPeopleRepositoryStaticWay(){
 		Person person = givenAPerson(30);
 		person.save();
 		assertEquals(1, Repository.getMapFor(Person.class).size());
 		Person.delete(person);
 		assertEquals(0, Repository.getMapFor(Person.class).size());
-		assertEquals(0, CommandLogList.getLogList().size());
 	}
 	
 	@Test
@@ -239,20 +224,4 @@ public class PrevalentObjectTest extends UnitTestCase {
 		p.save();
 		Assert.assertEquals(1, Repository.getRepository().size());
 	}
-	
-	@Test
-	public void shouldMaintainOneCommandOnLogListWhenObjectStateIsUpdated() {
-		Person person = givenAPerson(30);
-		person.save();
-		assertEquals(1, CommandLogList.getLogList().size());
-		assertEquals("Pessoa", Repository.getMapFor(Person.class).get(1L).getName());
-		assertEquals(1L, person.getOID().longValue());
-		
-		person.setName("New name");
-		person.save();
-		assertEquals(1, CommandLogList.getLogList().size());
-		assertEquals("New name", Repository.getMapFor(Person.class).get(1L).getName());
-		assertEquals(1L, person.getOID().longValue());
-	}
-
 }

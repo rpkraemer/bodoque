@@ -12,8 +12,6 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 			generateOIDForThisPrevalentObject();
 		
 		addPrevalentObjectToRepository(prevalentObject);
-		Command serializeCommand = createSerializeCommand(prevalentObject);
-		addCommandToLogList(serializeCommand);
 		return true;
 	}
 	
@@ -24,7 +22,6 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 			return false;
 		}
 		deletePrevalentObject(prevalentObject, this.oID);
-		removeCommandFromLogList(prevalentObject);
 		return true;
 	}
 
@@ -55,8 +52,6 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 			((PrevalentObject<T>) prevalentObject).oID = Sequence.getNextOIDFor(prevalentObject.getClass());
 		
 		addPrevalentObjectToRepository(prevalentObject);
-		Command serializeCommand = createSerializeCommand(prevalentObject);
-		addCommandToLogList(serializeCommand);
 		return true;
 	}
 	
@@ -67,27 +62,13 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 			return false;
 		}
 		deletePrevalentObject(prevalentObject, oID);
-		removeCommandFromLogList(prevalentObject);
 		return true;
-	}
-
-	private static <T extends Prevalent> void removeCommandFromLogList(T prevalentObject) {
-		CommandLogList.removeCommand(new SerializeCommand<Prevalent>(prevalentObject));
 	}
 
 	private static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long oId) {
 		Repository.deletePrevalentObject(prevalentObject, oId);
 	}
 
-	private static void addCommandToLogList(Command serializeCommand) {
-		CommandLogList.addCommand(serializeCommand);
-	}
-
-	private static <T extends Prevalent> Command createSerializeCommand(T prevalentObject) {
-		Command serializeCommand = new SerializeCommand<T>(prevalentObject);
-		return serializeCommand;
-	}
-	
 	private void generateOIDForThisPrevalentObject() {
 		this.oID = Sequence.getNextOIDFor(prevalentObject.getClass());
 	}
