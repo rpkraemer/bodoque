@@ -1,6 +1,7 @@
 package br.bodoque;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -34,15 +35,10 @@ class LogListDaemon implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			try {
-				Thread.sleep(secondsPollInterval);
-			} catch (InterruptedException e) {
-				//TODO where is my logger?!
-			}
-			
 			List<Command> commandsToFlush = CommandLogList.getLogList();
-			for (int index = 0; !commandsToFlush.isEmpty(); index++) {
-				Command commandToExecute = commandsToFlush.get(index);
+			Iterator<Command> iterator = commandsToFlush.iterator();
+			while (iterator.hasNext()) {
+				Command commandToExecute = iterator.next();
 				commandToExecute.execute();
 				
 				if (writer == null)
@@ -52,10 +48,33 @@ class LogListDaemon implements Runnable {
 					writer.writeToSnapshot(
 							((SerializeCommand<Prevalent>) commandToExecute).
 							getJSONRepresentation());
-					CommandLogList.removeCommand(commandToExecute);
+					commandToExecute.setRemovable(true);
 				} catch (IOException e) {
 					// TODO where is my logger?
 				}
+			}
+			cleanLogListWhenIsToBig();
+			
+			if (writer != null)
+				writer.flushAndClose();
+			writer = null; //to create new snapshot next cycle of writes
+			
+			try {
+				Thread.sleep(secondsPollInterval);
+			} catch (InterruptedException e) {
+				//TODO where is my logger?!
+			}
+		}
+	}
+
+	private void cleanLogListWhenIsToBig() {
+		List<Command> commandLogList = CommandLogList.getLogList(); 
+		if (commandLogList.size() >= 1000) {
+			Iterator<Command> iterator = commandLogList.iterator();
+			while (iterator.hasNext()) {
+				Command commandToBeRemoved = iterator.next();
+				if (commandToBeRemoved.isRemovable())
+					CommandLogList.removeCommand(commandToBeRemoved);
 			}
 		}
 	}

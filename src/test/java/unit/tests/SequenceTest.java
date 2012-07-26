@@ -1,9 +1,11 @@
 package unit.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import helpers.Person;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import br.bodoque.Sequence;
 
 
