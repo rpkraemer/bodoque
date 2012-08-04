@@ -3,12 +3,14 @@ package unit.tests;
 import static org.junit.Assert.assertEquals;
 import helpers.Customer;
 import helpers.Person;
+
 import java.util.Date;
 import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import br.bodoque.CannotDeletePrevalentObjectException;
 import br.bodoque.Filter;
 import br.bodoque.Find;
@@ -88,14 +90,14 @@ public class PrevalentObjectTest extends UnitTestCase {
 		Assert.assertNotNull(people);
 	}
 	
-	@Ignore
+	@Test
 	//TODO Verificar como salvar sub-classes de classes que estendem PrevalentObject
 	public void shouldSaveACustomerAtRepository() {
 		Customer customer = new Customer("Edipo", 23);
 		customer.setAddress("Rua sem nome, Bairro Jardim América, 1231, Curitiba - PR");
 		customer.setDtCadastro(new Date());
 		customer.save();
-
+		Assert.assertEquals(0, Repository.getListFor(Person.class).size());
 		Assert.assertEquals(1, Repository.getListFor(Customer.class).size());
 	}
 	
@@ -138,6 +140,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 		String message = "Cannot remove object of class Person. Only allowed to remove objects saved.";
 		try {
 			p.delete(true);
+			Assert.fail("Not captured exception!");
 		} catch (CannotDeletePrevalentObjectException e) {
 			Assert.assertEquals(message, e.getMessage());
 		}
@@ -211,11 +214,31 @@ public class PrevalentObjectTest extends UnitTestCase {
 	}
 	
 	@Test
-	public void shouldMaintainSameReference() {
+	public void shouldNotMaintainSameReferenceWhenSaveToRepository() {
 		Person p = givenAPerson(18);
 		p.save();
 		Person anotherReferenceButSameObject = Find.from(Person.class).byOID(1L);
-		Assert.assertSame(p, anotherReferenceButSameObject);
+		Assert.assertNotSame(p, anotherReferenceButSameObject);
+		
+		p.setName("Bob");
+		Assert.assertEquals("Pessoa", anotherReferenceButSameObject.getName());
+		p.save();
+		anotherReferenceButSameObject = Find.from(Person.class).byOID(1L);
+		Assert.assertEquals("Bob", anotherReferenceButSameObject.getName());
+	}
+	
+	@Test
+	public void shouldNotMaintainSameReferenceWhenSaveToRepositoryStaticWay() {
+		Person p = givenAPerson(18);
+		Person.save(p);
+		Person anotherReferenceButSameObject = Find.from(Person.class).byOID(1L);
+		Assert.assertNotSame(p, anotherReferenceButSameObject);
+		
+		p.setName("Bob");
+		Assert.assertEquals("Pessoa", anotherReferenceButSameObject.getName());
+		Person.save(p);
+		anotherReferenceButSameObject = Find.from(Person.class).byOID(1L);
+		Assert.assertEquals("Bob", anotherReferenceButSameObject.getName());
 	}
 	
 	@Test

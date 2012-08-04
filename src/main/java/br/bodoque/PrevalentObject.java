@@ -1,10 +1,13 @@
 package br.bodoque;
 
+import com.rits.cloning.Cloner;
+
 public abstract class PrevalentObject<T extends Prevalent> implements Prevalent {
 	
 	private T prevalentObject;
 	private Long oID;
-
+	private static Cloner cloner = new Cloner();
+	
 	public boolean save() {
 		prevalentObject = whoAmI();
 		
@@ -29,7 +32,6 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 													prevalentObjectClass, boolean... shouldRaiseException) {
 		if(oID == null) { 
 			if (shouldRaiseException.length > 0 && shouldRaiseException[0]) {
-				System.out.println(1);
 				String message = String.format("Cannot remove object of class %s. " +
 						"Only allowed to remove objects saved.", prevalentObjectClass.getSimpleName());
 				throw new CannotDeletePrevalentObjectException(message); 
@@ -42,6 +44,7 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 
 	@SuppressWarnings("unchecked")
 	private static <T extends Prevalent> void addPrevalentObjectToRepository(T prevalentObject) {
+		prevalentObject = cloner.deepClone(prevalentObject); // clone object to another reference
 		Repository.addPrevalentObject(prevalentObject, 
 				((PrevalentObject<T>) prevalentObject).getOID());
 	}
