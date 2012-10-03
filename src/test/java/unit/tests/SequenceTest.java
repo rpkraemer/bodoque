@@ -19,7 +19,7 @@ public class SequenceTest extends UnitTestCase {
 	
 	@Test
 	public void shouldInitializeIDsInOneWhenSequenceForThatClassIsEmpty() {
-		Long nextOID = Sequence.getNextOIDFor(Person.class);
+		Long nextOID = Sequence.getNextIdFor(Person.class);
 		assertEquals(1L, nextOID.longValue());
 	}
 	
@@ -35,13 +35,13 @@ public class SequenceTest extends UnitTestCase {
 		assertEquals(2L, nextOID.longValue());
 		
 		Sequence.clearSequenceFor(Person.class);
-		nextOID = Sequence.getNextOIDFor(Person.class); //should reset sequence
+		nextOID = Sequence.getNextIdFor(Person.class); //should reset sequence
 		assertEquals(1L, nextOID.longValue());
 	}
 	
 	private Long createAndIncrementTwoIndexes() {
-		Sequence.getNextOIDFor(Person.class); // create the sequence
-		Long nextOID = Sequence.getNextOIDFor(Person.class); //should increment
+		Sequence.getNextIdFor(Person.class); // create the sequence
+		Long nextOID = Sequence.getNextIdFor(Person.class); //should increment
 		return nextOID;
 	}
 }

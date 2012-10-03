@@ -7,7 +7,7 @@ public class Find<T extends Prevalent> {
 	
 	private Class<? extends Prevalent> prevalentObjectClass;
 	
-	public Find(Class<? extends Prevalent> prevalentObjectClass) {
+	private Find(Class<? extends Prevalent> prevalentObjectClass) {
 		this.prevalentObjectClass = prevalentObjectClass;
 	}
 	
@@ -33,7 +33,7 @@ public class Find<T extends Prevalent> {
 		return filteredObjects;
 	}
 	
-	public T byOID(Long oID) {
-		return Repository.getPrevalentObjectFromRepository(prevalentObjectClass, oID);
+	public T byId(Long id) {
+		return Repository.getPrevalentObjectFromRepository(prevalentObjectClass, id);
 	}
 }

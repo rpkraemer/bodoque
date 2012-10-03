@@ -5,40 +5,21 @@ import com.rits.cloning.Cloner;
 public abstract class PrevalentObject<T extends Prevalent> implements Prevalent {
 	
 	private T prevalentObject;
-	private Long oID;
+	private Long id;
 	private static Cloner cloner = new Cloner();
 	
 	public boolean save() {
 		prevalentObject = whoAmI();
-		
 		if (isPrevalentObjectNotPersistedYet())
-			generateOIDForThisPrevalentObject();
-		
+			generateIdForThisPrevalentObject();
 		addPrevalentObjectToRepository(prevalentObject);
 		return true;
 	}
 	
-	public boolean delete(boolean... shouldRaiseException) {
+	public boolean delete() {
 		prevalentObject = whoAmI();
-		if (!raiseOrNotThisIsTheQuestion(this.getOID(), prevalentObject.getClass(), 
-										 shouldRaiseException)) {
-			return false;
-		}
-		deletePrevalentObject(prevalentObject, this.oID);
-		return true;
-	}
-
-	private static boolean raiseOrNotThisIsTheQuestion(Long oID, Class<? extends Prevalent> 
-													prevalentObjectClass, boolean... shouldRaiseException) {
-		if(oID == null) { 
-			if (shouldRaiseException.length > 0 && shouldRaiseException[0]) {
-				String message = String.format("Cannot remove object of class %s. " +
-						"Only allowed to remove objects saved.", prevalentObjectClass.getSimpleName());
-				throw new CannotDeletePrevalentObjectException(message); 
-			} else {
-				return false;
-			}
-		}
+		if (this.id == null) return false;
+		deletePrevalentObject(prevalentObject, this.id);
 		return true;
 	}
 
@@ -46,25 +27,23 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 	private static <T extends Prevalent> void addPrevalentObjectToRepository(T prevalentObject) {
 		prevalentObject = cloner.deepClone(prevalentObject); // clone object to another reference
 		Repository.addPrevalentObject(prevalentObject, 
-				((PrevalentObject<T>) prevalentObject).getOID());
+				((PrevalentObject<T>) prevalentObject).getId());
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends Prevalent> boolean save(T prevalentObject) {
-		if (((PrevalentObject<T>) prevalentObject).getOID() == null)
-			((PrevalentObject<T>) prevalentObject).oID = Sequence.getNextOIDFor(prevalentObject.getClass());
+		if (((PrevalentObject<T>) prevalentObject).getId() == null)
+			((PrevalentObject<T>) prevalentObject).id = Sequence.getNextIdFor(prevalentObject.getClass());
 		
 		addPrevalentObjectToRepository(prevalentObject);
 		return true;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends Prevalent> boolean delete(T prevalentObject, boolean... shouldRaiseException) {
-		Long oID = ((PrevalentObject<T>) prevalentObject).getOID();
-		if (!raiseOrNotThisIsTheQuestion(oID, prevalentObject.getClass(), shouldRaiseException)) {
-			return false;
-		}
-		deletePrevalentObject(prevalentObject, oID);
+	public static <T extends Prevalent> boolean delete(T prevalentObject) {
+		Long id = ((PrevalentObject<T>) prevalentObject).getId();
+		if (id == null) return false;
+		deletePrevalentObject(prevalentObject, id);
 		return true;
 	}
 
@@ -72,17 +51,17 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 		Repository.deletePrevalentObject(prevalentObject, oId);
 	}
 
-	private void generateOIDForThisPrevalentObject() {
-		this.oID = Sequence.getNextOIDFor(prevalentObject.getClass());
+	private void generateIdForThisPrevalentObject() {
+		this.id = Sequence.getNextIdFor(prevalentObject.getClass());
 	}
 
 	private boolean isPrevalentObjectNotPersistedYet() {
-		return this.oID == null;
+		return this.id == null;
 	}
 
 	protected abstract T whoAmI();
 	
-	public Long getOID() {
-		return oID;
+	public Long getId() {
+		return id;
 	}
 }

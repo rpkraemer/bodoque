@@ -11,22 +11,22 @@ public class Sequence {
 		sequences = new HashMap<Class<? extends Prevalent>, Long>();
 	}
 	
-	public synchronized static Long getNextOIDFor(Class<? extends Prevalent> prevalentObjectClass) {
-		Long nextOID = sequences.get(prevalentObjectClass);
-		if (nextOID == null) {
+	public static Long getNextIdFor(Class<? extends Prevalent> prevalentObjectClass) {
+		Long nextId = sequences.get(prevalentObjectClass);
+		if (nextId == null) {
 			sequences.put(prevalentObjectClass, 1L);
-			nextOID = 1L;
+			nextId = 1L;
 		} else 
-			sequences.put(prevalentObjectClass, ++nextOID);
+			sequences.put(prevalentObjectClass, ++nextId);
 
-		return nextOID;
+		return nextId;
 	}
 
-	public synchronized static void clearSequenceFor(Class<? extends Prevalent> prevalentObjectClass) {
+	public static void clearSequenceFor(Class<? extends Prevalent> prevalentObjectClass) {
 		sequences.remove(prevalentObjectClass);
 	}
 
-	public synchronized static void clearSequences() {
+	public static void clearSequences() {
 		sequences.clear();
 	}
 }
