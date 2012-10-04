@@ -18,7 +18,7 @@ public class Repository {
 		return repository;
 	}
 	
-	public synchronized static <T extends Prevalent> void addPrevalentObject(T prevalentObject, Long oID) {
+	public static <T extends Prevalent> void addPrevalentObject(T prevalentObject, Long oID) {
 		Map<Long, Prevalent> prevalentObjectMap = repository.get(prevalentObject.getClass());
 		
 		if (prevalentObjectMap == null)
@@ -28,29 +28,29 @@ public class Repository {
 		repository.put(prevalentObject.getClass(), prevalentObjectMap);
 	}
 	
-	public synchronized static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long oID){
+	public static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long oID){
 		Map<Long, Prevalent> prevalentObjectMap = repository.get(prevalentObject.getClass());
 		if(prevalentObjectMap == null){ return ; }
 		prevalentObjectMap.remove(oID);
 	}
 	
-	public synchronized static void clearRepositoryFor(Class<? extends Prevalent> prevalentObjectClass) {
+	public static void clearRepositoryFor(Class<? extends Prevalent> prevalentObjectClass) {
 		repository.remove(prevalentObjectClass);
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized static <T extends Prevalent> List<T> getListFor(Class<T> prevalentObjectClass) {
+	public static <T extends Prevalent> List<T> getListFor(Class<T> prevalentObjectClass) {
 		Map<Long, T> prevalentObjectMap = (Map<Long, T>) repository.get(prevalentObjectClass);
 		return (List<T>) ((prevalentObjectMap != null) ? 
 				new ArrayList<T>(prevalentObjectMap.values()) : Collections.emptyList());
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized static <T extends Prevalent> Map<Long, T> getMapFor(Class<T> prevalentObjectClass) {
+	public static <T extends Prevalent> Map<Long, T> getMapFor(Class<T> prevalentObjectClass) {
 		return (Map<Long, T>) repository.get(prevalentObjectClass);
 	}
 
-	public synchronized static void clearRepository() {
+	public static void clearRepository() {
 		repository.clear();
 	}
 

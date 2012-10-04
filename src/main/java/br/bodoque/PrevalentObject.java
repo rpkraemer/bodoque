@@ -31,11 +31,13 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends Prevalent> boolean save(T prevalentObject) {
-		if (((PrevalentObject<T>) prevalentObject).getId() == null)
-			((PrevalentObject<T>) prevalentObject).id = Sequence.getNextIdFor(prevalentObject.getClass());
-		
-		addPrevalentObjectToRepository(prevalentObject);
+	public static <T extends Prevalent> boolean save(T ...prevalentObject) {
+		for (T object : prevalentObject) {
+			if (((PrevalentObject<T>) object).getId() == null)
+				((PrevalentObject<T>) object).id = Sequence.getNextIdFor(object.getClass());
+			
+			addPrevalentObjectToRepository(object);
+		}
 		return true;
 	}
 	

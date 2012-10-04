@@ -1,7 +1,7 @@
 package br.bodoque;
 
-public interface Filter<T> {
+public interface Filter<T extends Prevalent> {
 
-	boolean accept(T obj);
+	boolean accept(final T obj);
 	
 }
