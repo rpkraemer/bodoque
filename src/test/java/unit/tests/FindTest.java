@@ -66,11 +66,56 @@ public class FindTest extends UnitTestCase {
 		Person p1 = givenAPerson(23);
 		Person p2 = givenAPerson(25);
 		Person p3 = givenAPerson(37);
-		
 		p3.save(); p2.save(); p1.save();
 		
 		Person firstSaved = Find.from(Person.class).first();
 		Assert.assertEquals(37, firstSaved.getAge());
+	}
+	
+	@Test
+	public void shouldFindFirstTwoPeopleSaved() {
+		Person p1 = givenAPerson(23);
+		Person p2 = givenAPerson(25);
+		Person p3 = givenAPerson(37);
+		p3.save(); p2.save(); p1.save();
+		
+		Assert.assertEquals(2, Find.from(Person.class).first(2).size());
+		Assert.assertEquals(37, Find.from(Person.class).first(2).get(0).getAge());
+		Assert.assertEquals(25, Find.from(Person.class).first(2).get(1).getAge());
+	}
+	
+	@Test
+	public void shouldFindFirstTwoAdultPeopleSaved() {
+		Person p1 = givenAPerson(17);
+		Person p2 = givenAPerson(50);
+		Person p3 = givenAPerson(18);
+		Person p4 = givenAPerson(75);
+		Person child = givenAPerson(5);
+		Person child2 = givenAPerson(11);
+		Person.save(child, p1, p2, p4, child2, p3);
+		
+		List<Person> firstTwoAdults = Find.from(Person.class).filter(new Filter<Person>() {
+			public boolean accept(final Person p) {
+				return p.getAge() >= 18;
+			}
+		}).first(2);
+		
+		Assert.assertEquals(2, firstTwoAdults.size());
+		Assert.assertEquals(50, firstTwoAdults.get(0).getAge());
+		Assert.assertEquals(75, firstTwoAdults.get(1).getAge());
+	}
+	
+	/*
+	 * Will try return 3 people, but there's only 2 at repository
+	 * then will return only these 2
+	 */
+	@Test
+	public void shouldFindFirstThreePeopleSaved() {
+		Person p1 = givenAPerson(23);
+		Person p2 = givenAPerson(25);
+		p2.save(); p1.save();
+		
+		Assert.assertEquals(2, Find.from(Person.class).first(3).size());
 	}
 	
 	@Test
@@ -100,6 +145,51 @@ public class FindTest extends UnitTestCase {
 		
 		Person lastSaved = Find.from(Person.class).last();
 		Assert.assertEquals(23, lastSaved.getAge());
+	}
+	
+	@Test
+	public void shouldFindLastTwoPeopleSaved() {
+		Person p1 = givenAPerson(23);
+		Person p2 = givenAPerson(25);
+		Person p3 = givenAPerson(37);
+		p3.save(); p2.save(); p1.save();
+		
+		Assert.assertEquals(2, Find.from(Person.class).last(2).size());
+		Assert.assertEquals(23, Find.from(Person.class).last(2).get(0).getAge());
+		Assert.assertEquals(25, Find.from(Person.class).last(2).get(1).getAge());
+	}
+	
+	@Test
+	public void shouldFindLastTwoAdultPeopleSaved() {
+		Person p1 = givenAPerson(19);
+		Person p2 = givenAPerson(50);
+		Person p3 = givenAPerson(18);
+		Person p4 = givenAPerson(75);
+		Person child = givenAPerson(5);
+		Person child2 = givenAPerson(11);
+		Person.save(child, p1, p2, p4, child2, p3);
+		
+		List<Person> lastTwoAdults = Find.from(Person.class).filter(new Filter<Person>() {
+			public boolean accept(final Person p) {
+				return p.getAge() >= 18;
+			}
+		}).last(2);
+		Assert.assertEquals(2, lastTwoAdults.size());
+		Assert.assertEquals(18, lastTwoAdults.get(0).getAge());
+		Assert.assertEquals(75, lastTwoAdults.get(1).getAge());
+	}
+	
+	/*
+	 * Will try return 3 people, but there's only 2 at repository
+	 * then will return only these 2
+	 */
+	@Test
+	public void shouldFindLastThreePeopleSaved() {
+		Person p1 = givenAPerson(23);
+		Person p2 = givenAPerson(25);
+		p2.save(); p1.save();
+		
+		Assert.assertEquals(2, Find.from(Person.class).last(3).size());
 	}
 	
 	@Test
@@ -140,7 +230,7 @@ public class FindTest extends UnitTestCase {
 	}
 	
 	@Test
-	public void shouldCountFilteredSavedPeople() {
+	public void shouldCountPeople() {
 		Person p1 = givenAPerson(19);
 		Person p2 = givenAPerson(50);
 		Person p3 = givenAPerson(18);
@@ -150,5 +240,23 @@ public class FindTest extends UnitTestCase {
 		child.save(); child2.save();
 		
 		Assert.assertEquals(5, Find.from(Person.class).count());
+	}
+	
+	@Test
+	public void shouldFindPeopleWhoHasADog() {
+		Person paul = givenAPersonWithADog(27, "Bob");
+		Person john = givenAPersonWithADog(35, "Spike");
+		Person mike = givenAPersonWithADog(15, "Pitu");
+		Person josh = givenAPerson(12);
+		Person marcelino = givenAPerson(8);
+		Person.save(paul, josh, john, mike, marcelino);
+		
+		List<Person> peopleWithDog = Find.from(Person.class).filter(new Filter<Person>() {
+			public boolean accept(Person p) {
+				return p.getDog() != null;
+			}
+		}).all();
+		Assert.assertNotNull(peopleWithDog);
+		Assert.assertEquals(3, peopleWithDog.size());
 	}
 }

@@ -49,8 +49,8 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 		return true;
 	}
 
-	private static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long oId) {
-		Repository.deletePrevalentObject(prevalentObject, oId);
+	private static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long id) {
+		Repository.deletePrevalentObject(prevalentObject.getClass(), id);
 	}
 
 	private void generateIdForThisPrevalentObject() {

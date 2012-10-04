@@ -28,10 +28,14 @@ public class Repository {
 		repository.put(prevalentObject.getClass(), prevalentObjectMap);
 	}
 	
-	public static <T extends Prevalent> void deletePrevalentObject(T prevalentObject, Long oID){
-		Map<Long, Prevalent> prevalentObjectMap = repository.get(prevalentObject.getClass());
-		if(prevalentObjectMap == null){ return ; }
-		prevalentObjectMap.remove(oID);
+	public static <T extends Prevalent> void deletePrevalentObject(Class<? extends Prevalent> prevalentObjectClass, Long id){
+		Map<Long, Prevalent> prevalentObjectMap = repository.get(prevalentObjectClass);
+		if (prevalentObjectMap == null) { return; }
+		prevalentObjectMap.remove(id);
+	}
+	
+	public static <T extends Prevalent> void deletePrevalentObjectsFrom(Class<? extends Prevalent> prevalentObjectClass) {
+		repository.remove(prevalentObjectClass);
 	}
 	
 	public static void clearRepositoryFor(Class<? extends Prevalent> prevalentObjectClass) {
@@ -56,7 +60,7 @@ public class Repository {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Prevalent> T getPrevalentObjectFromRepository(
-			Class<? extends Prevalent> prevalentObjectClass, Long oID) {
-		return (T) repository.get(prevalentObjectClass).get(oID);
+			Class<? extends Prevalent> prevalentObjectClass, Long id) {
+		return (T) repository.get(prevalentObjectClass).get(id);
 	}
 }

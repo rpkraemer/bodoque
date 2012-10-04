@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Find<T extends Prevalent> {
 	
-	private Class<? extends Prevalent> prevalentObjectClass;
+	private Class<T> prevalentObjectClass;
 	private Filter<T> filter;
 	
-	private Find(Class<? extends Prevalent> prevalentObjectClass) {
+	private Find(Class<T> prevalentObjectClass) {
 		this.prevalentObjectClass = prevalentObjectClass;
 	}
 	
@@ -16,7 +16,6 @@ public class Find<T extends Prevalent> {
 		return new Find<T>(prevalentObjectClass);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<T> all() {
 		List<T> allObjects = (List<T>) Repository.getListFor(this.prevalentObjectClass);
 		return (isFilterInformed()) ? applyFilter(allObjects) : allObjects;
@@ -43,13 +42,25 @@ public class Find<T extends Prevalent> {
 		return Repository.getPrevalentObjectFromRepository(prevalentObjectClass, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public T first() {
 		List<T> allObjects = (List<T>) Repository.getListFor(prevalentObjectClass);
 		return (isFilterInformed()) ? applyFilter(allObjects).get(0) : allObjects.get(0);
 	}
 	
-	@SuppressWarnings("unchecked")
+	public List<T> first(int numberOfObjects) {
+		List<T> firstObjects = new ArrayList<T>();
+		List<T> allObjects = (List<T>) Repository.getListFor(prevalentObjectClass);
+		if (isFilterInformed()) {
+			List<T> filteredObjects = applyFilter(allObjects);
+			for (int i = 0; i < numberOfObjects && i < filteredObjects.size(); i++)
+				firstObjects.add(filteredObjects.get(i));
+		} else {
+			for (int i = 0; i < numberOfObjects && i < allObjects.size(); i++)
+				firstObjects.add(allObjects.get(i));
+		}
+		return firstObjects;
+	}
+	
 	public T last() {
 		List<T> allObjects = (List<T>) Repository.getListFor(prevalentObjectClass);
 		int lastObject = allObjects.size() - 1;
@@ -61,8 +72,23 @@ public class Find<T extends Prevalent> {
 			return allObjects.get(lastObject);
 		}
 	}
+	
+	public List<T> last(int numberOfObjects) {
+		List<T> lastObjects = new ArrayList<T>();
+		List<T> allObjects = (List<T>) Repository.getListFor(prevalentObjectClass);
+		if (isFilterInformed()) {
+			List<T> filteredObjects = applyFilter(allObjects);
+			for (int i = 0, j = filteredObjects.size() - 1; 
+				     i < numberOfObjects && i < filteredObjects.size(); i++, j--)
+				lastObjects.add(filteredObjects.get(j));
+		} else {
+			for (int i = 0, j = allObjects.size() - 1; 
+					 i < numberOfObjects && i < allObjects.size(); i++, j--)
+				lastObjects.add(allObjects.get(j));
+		}
+		return lastObjects;
+	}
 
-	@SuppressWarnings("unchecked")
 	public long count() {
 		List<T> allObjects = (List<T>) Repository.getListFor(prevalentObjectClass);
 		return (isFilterInformed()) ? applyFilter(allObjects).size() : allObjects.size();

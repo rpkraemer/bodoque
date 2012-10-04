@@ -6,6 +6,7 @@ public class Person extends PrevalentObject<Person> {
 
 	private String name;
 	private int age;
+	private Dog dog;
 
 	public String getName() {
 		return name;
@@ -18,6 +19,12 @@ public class Person extends PrevalentObject<Person> {
 	}
 	public void setAge(int age) {
 		this.age = age;
+	}
+	public Dog getDog() {
+		return dog;
+	}
+	public void setDog(Dog dog) {
+		this.dog = dog;
 	}
 	
 	public Person(String name, int age) {
