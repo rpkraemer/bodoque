@@ -28,10 +28,13 @@ public class Delete<T extends Prevalent> {
 	
 	@SuppressWarnings("unchecked")
 	public boolean all() {
-		List<T> allObjects = Find.from(prevalentObjectClass).all();
-		List<T> objectsToRemove = (isFilterInformed()) ? applyFilter(allObjects) : allObjects;
-		for (T object : objectsToRemove)
-			Repository.deletePrevalentObject(prevalentObjectClass, ((PrevalentObject<T>) object).getId());
+		if (isFilterInformed()) {
+			List<T> objectsToRemove = applyFilter(Find.from(prevalentObjectClass).all());
+			for (T object : objectsToRemove)
+				Repository.deletePrevalentObject(prevalentObjectClass, ((PrevalentObject<T>) object).getId());
+		} else {
+			Repository.deletePrevalentObjectsFrom(prevalentObjectClass);
+		}
 		return true;
 	}
 	

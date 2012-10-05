@@ -15,7 +15,7 @@ public class Repository {
 	}
 	
 	public static Map<Class<? extends Prevalent>, Map<Long, Prevalent>> getRepository() {
-		return repository;
+		return Collections.unmodifiableMap(repository);
 	}
 	
 	public static <T extends Prevalent> void addPrevalentObject(T prevalentObject, Long oID) {

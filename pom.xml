@@ -6,8 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Bodoque</name>
 	<description>
-		A Simple Java Framework for Prevalence. 
-		Provides a prevalence functionality with a familiar Active Record Pattern
+		A Simple Java Framework for Persistence inspired at Prevalence. 
 	</description>
 
 	<dependencies>
@@ -15,17 +14,13 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>uk.com.robust-it</groupId>
             <artifactId>cloning</artifactId>
             <version>1.8.2</version>
         </dependency>
-		<dependency>
-			<groupId>org.jmock</groupId>
-			<artifactId>jmock-junit4</artifactId>
-			<version>2.5.1</version>
-		</dependency>
 	</dependencies>
 	
 	<reporting>
@@ -34,6 +29,11 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.5.1</version>
+				<configuration>
+					<formats>
+						<format>html</format>
+					</formats>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
