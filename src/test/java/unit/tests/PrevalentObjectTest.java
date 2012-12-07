@@ -158,4 +158,11 @@ public class PrevalentObjectTest extends UnitTestCase {
 		p.save();
 		Assert.assertEquals(1, Repository.getRepository().size());
 	}
+	
+	@Test
+	public void shouldTrySaveASavedPerson(){
+		Person p = givenAPerson(30);
+		Person.save(p);
+		Person.save(p);
+	}
 }
