@@ -53,6 +53,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 		List<Person> people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(2, people.size());
+		Assert.assertNotNull(people.get(0).getId());
 	}
 	
 	@Test
