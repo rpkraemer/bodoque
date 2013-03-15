@@ -7,7 +7,7 @@ public class Bodoque {
 
 	static Logger logger = LogManager.getLogger(Bodoque.class.getName());
 	
-	public static void initialize() {
+	static void initialize() {
 		logger.info("Inicializando Bodoque");
 		initializeBodoqueResources();
 	}
