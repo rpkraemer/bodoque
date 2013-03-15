@@ -259,4 +259,58 @@ public class FindTest extends UnitTestCase {
 		Assert.assertNotNull(peopleWithDog);
 		Assert.assertEquals(3, peopleWithDog.size());
 	}
+	
+	@Test
+	public void shouldReturnAduldPeopleWithFilterFirst(){
+		Person p1 = givenAPerson(19);
+		Person p2 = givenAPerson(50);
+		Person p3 = givenAPerson(18);
+		Person child = givenAPerson(53);
+		Person child2 = givenAPerson(34);
+		Person.save(p1, p2, p3);
+		child.save(); child2.save();
+		
+		List<Person> adults = Find.from(Person.class).filter(new Filter<Person>() {
+			public boolean accept(final Person p) {
+				return p.getAge() >= 18;
+			}
+		}).first(3);
+		
+		Assert.assertEquals(3, adults.size());
+		
+	}
+	
+	@Test
+	public void shouldTestLastWithFilter(){
+		Person p1 = givenAPerson(23);
+		Person p3 = givenAPerson(37);
+		Person p2 = givenAPerson(37);
+		p3.save(); p1.save(); p2.save();
+		
+		List<Person> lastsSaved = Find.from(Person.class).filter(new Filter<Person>(){
+			public boolean accept(final Person p){
+				return p.getAge() > 10;
+			}
+		}).last(1);
+		
+		Assert.assertEquals(1, lastsSaved.size());
+	}
+	
+	@Test
+	public void shouldTestLastWithFilter2(){
+		Person p1 = givenAPerson(23);
+		Person p3 = givenAPerson(37);
+		Person p4 = givenAPerson(37);
+		Person p2 = givenAPerson(37);
+		p3.save(); p1.save(); p2.save(); p4.save();
+		
+		List<Person> lastsSaved = Find.from(Person.class).filter(new Filter<Person>(){
+			public boolean accept(final Person p){
+				return p.getAge() > 10;
+			}
+		}).last(5);
+		
+		Assert.assertEquals(4, lastsSaved.size());
+		
+	}
 }

@@ -28,6 +28,11 @@ public class DeleteTest extends UnitTestCase {
 	}
 	
 	@Test
+	public void shouldNotRaiseExceptionWhenTryDeleteNullObject(){
+		Delete.from(Person.class).byId(6660L);
+	}
+	
+	@Test
 	public void shouldDeleteAllPeople() {
 		Person p1 = givenAPerson(19);
 		Person p2 = givenAPerson(50);

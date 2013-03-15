@@ -39,7 +39,7 @@ public class Find<T extends Prevalent> {
 	}
 	
 	public T byId(Long id) {
-		return Repository.getPrevalentObjectFromRepository(prevalentObjectClass, id);
+		return Repository.getPrevalentObject(prevalentObjectClass, id);
 	}
 
 	public T first() {

@@ -27,8 +27,5 @@ public class Customer extends Person {
 		this.address = address;
 	}
 	
-	@Override
-	protected Customer whoAmI() {
-		return this;
-	}
+
 }

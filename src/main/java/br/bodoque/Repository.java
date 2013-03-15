@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rits.cloning.Cloner;
+
 public class Repository {
 
 	private static Map<Class<? extends Prevalent>, Map<Long, Prevalent>> repository;
+	private static Cloner cloner = new Cloner();
 	
 	static {
 		repository = new HashMap<Class<? extends Prevalent>, Map<Long, Prevalent>>();
@@ -59,8 +62,8 @@ public class Repository {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends Prevalent> T getPrevalentObjectFromRepository(
-			Class<? extends Prevalent> prevalentObjectClass, Long id) {
-		return (T) repository.get(prevalentObjectClass).get(id);
+	public static <T extends Prevalent> T getPrevalentObject(
+			  Class<? extends Prevalent> prevalentObjectClass, Long id) {
+	       return (T) cloner.deepClone(repository.get(prevalentObjectClass).get(id));
 	}
 }
