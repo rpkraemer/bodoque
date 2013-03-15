@@ -53,6 +53,7 @@ public class PrevalentObjectTest extends UnitTestCase {
 		List<Person> people = Find.from(Person.class).all();
 		Assert.assertNotNull(people);
 		Assert.assertEquals(2, people.size());
+		Assert.assertNotNull(people.get(0).getId());
 	}
 	
 	@Test
@@ -156,5 +157,25 @@ public class PrevalentObjectTest extends UnitTestCase {
 		Person p = givenAPerson(30);
 		p.save();
 		Assert.assertEquals(1, Repository.getRepository().size());
+	}
+	
+	
+	@Test
+	public void shouldNotImplicitSavePerson(){
+	  Person obj = givenAPerson(74);
+	  obj.save();
+	  obj = null;
+	  obj = Find.from(Person.class).byId(1L);
+	  obj.setAge(12);
+	  Person obj2 = Find.from(Person.class).byId(1L);
+	  Assert.assertTrue(obj2.getAge() == 74);
+	  
+	}
+	
+	@Test
+	public void shouldTrySaveASavedPerson(){
+		Person p = givenAPerson(30);
+		Person.save(p);
+		Person.save(p);
 	}
 }
