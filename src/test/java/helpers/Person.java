@@ -31,7 +31,5 @@ public class Person extends PrevalentObject<Person> {
 		this.name = name;
 		this.age = age;
 	}
-	
-	@Override
-	protected Person whoAmI() { return this; }
+
 }

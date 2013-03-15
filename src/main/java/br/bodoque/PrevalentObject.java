@@ -4,22 +4,19 @@ import com.rits.cloning.Cloner;
 
 public abstract class PrevalentObject<T extends Prevalent> implements Prevalent {
 	
-	private T prevalentObject;
 	private Long id;
 	private static Cloner cloner = new Cloner();
 	
 	public boolean save() {
-		prevalentObject = whoAmI();
 		if (isPrevalentObjectNotPersistedYet())
 			generateIdForThisPrevalentObject();
-		addPrevalentObjectToRepository(prevalentObject);
+		addPrevalentObjectToRepository(this);
 		return true;
 	}
 	
 	public boolean delete() {
-		prevalentObject = whoAmI();
 		if (this.id == null) return false;
-		deletePrevalentObject(prevalentObject, this.id);
+		deletePrevalentObject(this, this.id);
 		return true;
 	}
 
@@ -54,14 +51,14 @@ public abstract class PrevalentObject<T extends Prevalent> implements Prevalent 
 	}
 
 	private void generateIdForThisPrevalentObject() {
-		this.id = Sequence.getNextIdFor(prevalentObject.getClass());
+		this.id = Sequence.getNextIdFor(this.getClass());
 	}
 
 	private boolean isPrevalentObjectNotPersistedYet() {
 		return this.id == null;
 	}
 
-	protected abstract T whoAmI();
+	//protected abstract T whoAmI();
 	
 	public Long getId() {
 		return id;

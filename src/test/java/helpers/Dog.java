@@ -14,8 +14,4 @@ public class Dog extends PrevalentObject<Dog> {
 		return name;
 	}
 
-	@Override
-	protected Dog whoAmI() {
-		return this;
-	}
 }
