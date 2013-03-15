@@ -92,6 +92,24 @@ public class PrevalentObjectTest extends UnitTestCase {
 	}
 	
 	@Test
+	public void shouldUpdateACustomerAtRepository() {
+		Customer customer = new Customer("Fulano de Tal", 23);
+		customer.setAddress("Rua sem nome, Bairro Sem nome, 1231, Passo Fundo - RS");
+		customer.setDtCadastro(new Date());
+		customer.save();
+		Long id = customer.getId();
+		customer = null;
+		
+		customer = Find.from(Customer.class).byId(id);
+		customer.setAddress("Novo Address");
+		Customer.save(customer);
+		
+		customer = null;
+		customer = Find.from(Customer.class).byId(id);
+		Assert.assertEquals("Novo Address", customer.getAddress());
+	}
+	
+	@Test
 	public void shouldReturnTrueWhenSaveAPersonAtRepository() {
 		Person p = givenAPerson(20);
 		Assert.assertTrue(p.save());
